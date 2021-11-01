@@ -25,11 +25,17 @@ const newNode = new Node(val);
 	if(this.head === null)
 	{
 	this.head = newNode;
-	console.log(“The head node is:” + val);
+	console.log("The head node is:" + val);
 	}
 	else
 	{
 	let current = this.head;
-	
+    while(current.next)
+        {
+        current = current.next;    
+        }
+        current.next = newNode;
+        console.log("The head node is:" + val);
 	}
+    this.size++;
 }
