@@ -39,3 +39,49 @@ const newNode = new Node(val);
 	}
     this.size++;
 }
+
+// Making the new list!  Add PPL for their own
+// the first is the HEAD
+let list = new LinkedList();
+list.add("Trevoravis");
+list.add("Sarah Bear");
+list.add("Brandon Monk");
+list.add("Evelyn");
+list.add("Poppy Everret");
+
+// REMOVE the HEAD Node!
+removeHeadNode()
+{
+    if(this.head === null)
+    {
+        return "The list is empty! WHAT HAVE YOU DONE!?";
+    }
+    else
+    {
+        this.head = this.head.next;
+    }
+}
+
+// ADD a HEAD to the front 
+// this creates a new node but because its @the front this
+// makes it the head
+addNewHead(valHead)
+{
+    if(this.head === null)
+    {
+        this.head = new Node(valHead);
+        console.log("Now theres a new head:" + valHead);
+    }
+    else
+    {
+        let temp = this.head;
+        this.head = new Node(valHead);
+        this.head.next = temp;
+    }
+}
+
+// Show the Array!  The NODES!  The HEAD!
+display()
+{
+
+}
