@@ -138,3 +138,29 @@ insertAt(valNode, index)
 }
 
 removeSelectedNode(index)
+{
+    if(index > 0 && index > this.size)
+    {
+        console.log("You dun goof'd.  This is serious business.");
+        return false;
+    }
+    let current = this.head;
+    let previous = current;
+    let count = 0;
+    // if the selected slot is the HEAD of first position in array
+    if(index === 0)
+    {
+        this.head = current.next;
+    }
+    else
+    {
+        while(count < index)
+        {
+            count++;
+            previous = current;
+            current = current.next;
+        }
+        previous.next = current.next;
+    }
+    this.size--;  //make sure to END with this so the overall size is reduced
+}
