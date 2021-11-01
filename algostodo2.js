@@ -164,3 +164,18 @@ removeSelectedNode(index)
     }
     this.size--;  //make sure to END with this so the overall size is reduced
 }
+
+// REVERSE the whole array
+reverseNodeOrder()
+{
+    let current = this.head;
+    let previous = null;
+    while(current !== null)
+    {
+        let next = current.next;
+        current.next = previous;
+        previous = current;  // THIS FIRST
+        current = next;      // THEN THIS!!
+    }
+    this.head = previous;
+}
