@@ -40,15 +40,6 @@ const newNode = new Node(val);
     this.size++;
 }
 
-// Making the new list!  Add PPL for their own
-// the first is the HEAD
-let list = new LinkedList();
-list.add("Trevoravis");
-list.add("Sarah Bear");
-list.add("Brandon Monk");
-list.add("Evelyn");
-list.add("Poppy Everret");
-
 // REMOVE the HEAD Node!
 removeHeadNode()
 {
@@ -83,5 +74,32 @@ addNewHead(valHead)
 // Show the Array!  The NODES!  The HEAD!
 display()
 {
+    let counter = 0;
+    let current = this.head;
+    let str = "";
 
+    while(current)
+        {
+            str += "Current count: " + counter + ". " + current.val + " ";
+            current = current.next;
+            counter++;    
+        }
+        return(`${str}`);
 }
+
+// Making the new list!  Add PPL for their own
+// the first is the HEAD
+let list = new LinkedList();
+list.add("Trevoravis");
+list.add("Sarah Bear");
+list.add("Brandon Monk");
+list.add("Evelyn");
+list.add("Poppy Everret");
+list.add("Jay");
+list.add("Rage");
+list.add("Moo Cow");
+list.add("Aaron");
+list.add("Jax");
+console.log(list.display());
+list.addNewHead("Front Add");
+console.log(list.display());
