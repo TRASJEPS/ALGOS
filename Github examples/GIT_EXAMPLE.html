@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <!-- connects to nov_test_repo -->
+    <!-- <link rel="shortcut icon" type="image/png" href="images/Quote_Dash_Favicon.png"> WHY IT NO WORK-->
+    <link rel="shortcut icon" type="image/png" href="{% static 'Quote_Dash_Favicon.png' %}">
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <title>Welcome Back {{user.first_name}} {{user.last_name}}!</title>
+</head>
+<body class="bodyColor">
+
+    {% if request.session.user_validation_results %}
+        {% if messages %}
+        <div class="headerCon">
+        <ul>
+            {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        </div>
+        {% endif %}
+    {% endif %}
+   
+    <div class="yourInfoHeaderCon">
+        <center><h1 id="lineUP_HEADER">Quote Dash Profile Details:</h1></center>
+            <div class="hiLight_PROFILE_INFO">
+                <div><h3 id="lineUP">Account:</h3><h2 id="lineUP"> {{user.user_name}} </h2></div>
+                <div><h3 id="lineUP">Name:</h3><h2 id="lineUP"> {{user.first_name}} {{user.last_name}} </h2></div>
+                <div><h3 id="lineUP">Email:</h3><h2 id="lineUP"> {{user.email_address}} </h2></div>
+                <div class="hiLight_PROFILE_OPTIONS">
+                    <form action="/edit_my_profile" method="GET">
+                        {% csrf_token %}
+                    <center><button class="BUTTONZ">Edit Your Profile</button></center>
+                    </form><br>
+                    <form action="/logout" method="POST">
+                        {% csrf_token %}
+                    <center><button class="BUTTONZ">Log Off</button></center>
+                    </form>
+                </div>
+            </div>
+
+    </div>
+
+    <div class="favorite_Books_Header">
+        <center><h1 id="lineUP_HEADER">{{user.first_name}} {{user.last_name}}'s Favorite Quotes:</h1></center>
+            {% for book in user.favorited_books.all %}
+                    <a href="/view_book/{{book.id}}"><div class="ALL_FAVORITE_BOOKS">
+                    <center>
+                    <div><h4 id="lineUP">{{book.book_title}}: " {{book.book_description}} "</h4></div>
+                    <div><h5 id="lineUP">Added by:</h5><h5 id="lineUP"> {{book.book_uploaded_by.first_name}} {{book.book_uploaded_by.last_name}} on {{book.created_at}}</h5></div>
+                    <div><h5 id="lineUP">{{user.favorited_books.id.all}}</h5></div>
+                    <div>
+                        {% if book.book_uploaded_by.id != request.session.userid %}
+                        <form action="/unfavorite_book/{{book.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Remove Favorite</button>
+                        </form>
+                        {% else %}
+                        <form action="/unfavorite_book/{{book.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Remove Favorite</button>
+                        </form>
+                        <form action="/edit_book/{{book.id}}" method="GET" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Edit Quote</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    </center>
+                    </div></a>
+                {% endfor %}
+    </div>
+
+    <div class="yourInfoHeaderCon_BOOK_LIBRARY">
+        <center><h1 id="lineUP_HEADER">Quote Library:</h1></center>
+ 
+        {% if request.session.book_validation_results %}
+            {% if messages %}
+                <div class="headerCon_BOOKS_MANAGER_MESSAGES">
+                    <ul>
+                        {% for message in messages %}
+                            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <center><div> 
+            {% if all_books %}
+            {% for book in all_books reversed %}
+            <!-- class="book_hover" -->
+                <a href="/view_book/{{book.id}}"><div class="hiLight_ALL_BOOKS">
+                    
+                    <div><h4 id="lineUP">{{book.book_title}}: " {{book.book_description}} "</h4></div>
+                    <!-- <div><h4 id="lineUP">Author:</h4><h4 id="lineUP"> - x2PAR book.book_title x2PAR </h4></div> -->
+                    <div><h5 id="lineUP">Added by:</h5><h5 id="lineUP"> {{book.book_uploaded_by.first_name}} {{book.book_uploaded_by.last_name}} on {{book.created_at}}</h5></div>
+                    
+                    <div>
+                        <div class="FAVORITE_and_LIKE_counterSTYLE">
+                            <p id="lineUP">Total Likes: {{book.user_books_likes.count}}</p>
+                            <p id="lineUP">Total Favorites: {{book.favorited_by.count}}</p>
+                        </div>
+                        {% if user in book.user_books_likes.all %}  
+                        <form action="/unlike_book/{{book.id}}" method="POST" id="lineUP">
+                             {% csrf_token %}
+                             <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Unlike</button>
+                        </form>
+                        {% else %}
+                        <form action="/like_book/{{book.id}}" method="POST" id="lineUP">
+                             {% csrf_token %}
+                             <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Like</button>
+                        </form>
+                        {% endif %}
+                        
+                        {% if user in book.favorited_by.all %}
+                        <form action="/unfavorite_book/{{book.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Remove Favorite</button>
+                        </form>
+                        {% else %}
+                        <form action="/favorite_book/{{book.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Add Favorite</button>
+                        </form>
+                        {% endif %}
+
+                        {% if book.book_uploaded_by.id == request.session.userid %}
+                        <form action="/edit_book/{{book.id}}" method="GET" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Edit Quote</button>
+                        </form>
+                        <form action="/delete_book/{{book.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="ADDnEDITnFAV_BUTTONZ">Delete</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div></a>
+            {% endfor %}
+            {% endif %}
+        </div></center>
+
+            <div class="hiLight_BOOK_LIBRARY">
+                <h2>Post New Quote:</h2>
+                <form action="/book/create_new" method="POST">
+                    {% csrf_token %}
+                    <div>
+                        <label for="book_title">Author:</label>               
+                        <input type="text" name="book_title" id="enter_AUTHOR_NAME" {% if request.session.book_title %} value="{{ request.session.book_title }}"{% endif %}>
+                        <br><br>
+                    </div>
+                    <div>
+                        <label for="book_description">Quote:</label>
+                        <textarea name="book_description" id="textarea_post_new_quote" cols="40" rows="3" {% if request.session.book_description %} placeholder="{{ request.session.book_description }}"{% endif %}></textarea>
+                        <br><br>
+                    </div>
+                    <button type="submit" class="LIBRARY_BUTTONZ">Add Your New Quote</button>
+                </form>
+            </div>
+    </div>
+
+    <div class="headerCon">
+        <center><h2 id="MESSAGES_header">Messages:</h2></center>
+        <div id="hiLight_MESSAGES">
+            <div id="POST_NEW_MESSAGE_CONTAINER">
+                <h3>Post New Message:</h3>
+                <form action="/post_message" method="POST">
+                    {% csrf_token %}
+                    <textarea name="post_message" id="textarea_edit_message" cols="40" rows="4" placeholder="Tell us what you think..."></textarea><br><br>
+                    <button type="submit" class="BUTTONZ">Post Message</button>
+                </form>
+            </div>
+        </div>
+        {% if wall_messages %}
+            {% for wall_message in wall_messages reversed %}
+                <div id="hiLight_MESSAGES">
+                    <div id="solo_MESSAGE_CONTAINER">
+                        <div class="message_title_context_align">
+                            <h3>{{ wall_message.poster.first_name}} {{ wall_message.poster.last_name}} - {{wall_message.created_at}}</h3>
+                            <h4>{{wall_message.message}}</h4>
+                        </div>
+                        <p id="lineUP">Total Likes: {{wall_message.user_message_likes.count}}</p>
+                        {% if user in wall_message.user_message_likes.all %} 
+                        <form action="/unlike_message/{{wall_message.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="posted_message_BUTTONZ">Unlike</button>
+                        </form>
+                        {% else %}
+                        <form action="/like_message/{{wall_message.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="posted_message_BUTTONZ">Like</button>
+                        </form>
+                        {% endif %}
+                        {% if wall_message.poster.id == request.session.userid %}
+                        <form action="/edit_message/{{wall_message.id}}" method="GET" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="posted_message_BUTTONZ">Edit Message</button>
+                        </form>
+                        <form action="/delete_message/{{wall_message.id}}" method="POST" id="lineUP">
+                            {% csrf_token %}
+                            <button type="submit" class="posted_message_BUTTONZ">Delete Message</button>
+                        </form>
+                        {% endif %}
+                    </div>
+                    <div id="comments_COMPLETE_container">
+                        <center><h4 id="hiLight_COMMENTS_HEADER">Comments:</h4></center>
+                        {% if wall_message.post_comments %}
+                            {% for post_comment in wall_message.post_comments.all reversed %}
+                                <div id="hiLight_COMMENTS"><h4> {{ post_comment.poster.first_name}} {{ post_comment.poster.last_name}} - {{post_comment.created_at}} </h4>
+                                    <h5> {{post_comment.message}} </h5>
+                                    <!-- SEE THE ADDED ID  -->
+                                    <p class="COMMENT_lineUP" id="AJAX_COMMENT_LIKES_TOTAL_{{post_comment.id}}">Total Likes: {{post_comment.user_comment_likes.count}}</p>
+                                    {% if user in post_comment.user_comment_likes.all %} 
+                                    <a href="/unlike_comment/{{post_comment.id}}" id="COMMENT_UNLIKE_AJAX" class="COMMENT_lineUP">
+                                        <button class="COMMENT_BUTTONZ">Unlike</button>
+                                    </a>
+                                    {% else %}
+                                    <a href="/like_comment/{{post_comment.id}}" id="COMMENT_LIKE_AJAX" class="COMMENT_lineUP" postID="{{post_comment.id}}">
+                                        <!-- Like -->
+                                        <button class="COMMENT_BUTTONZ">Like</button>
+                                    </a>
+                                    {% endif %}
+                                    {% if post_comment.poster.id == request.session.userid %}
+                                    <form action="/edit_comment/{{post_comment.id}}" method="GET" class="COMMENT_lineUP">
+                                        {% csrf_token %}
+                                        <button type="submit" class="COMMENT_BUTTONZ">Edit Comment</button>
+                                    </form>
+                                    <form action="/delete_comment/{{post_comment.id}}" method="POST" class="COMMENT_lineUP">
+                                        {% csrf_token %}
+                                        <button type="submit" class="COMMENT_BUTTONZ">Delete Comment</button>
+                                    </form>
+                                    {% endif %}
+                                </div>    
+                            {% endfor %} 
+                        {% endif %}
+                        <div id="lineUP_COMMENT_BOX">
+                            <h5>Reply to {{ wall_message.poster.first_name}} {{ wall_message.poster.last_name}}'s Message</h5>
+                            <form action="/post_comment/{{wall_message.id}}" method="POST">
+                                {% csrf_token %}
+                                    <textarea name="post_comment" id="textarea_add_comment" rows="1"></textarea><br><br>
+                                    <button type="submit" class="COMMENT_BUTTONZ">Add Your Comment</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>    
+            {% endfor %}       
+        {% endif %}
+    </div>
+    
+</body>
+<script>
+    // THIS COMES FROM THE ID and CHANGE FROM FORM SUBMIT to CLICK 
+    // EVENT LISTENER,
+$('body').on('click', '#COMMENT_LIKE_AJAX', function(e){    
+    var postID = $(this).attr("postID")
+    var change = $(this)
+    e.preventDefault();
+    $.ajax({
+    // url: '/like_comment/<int:post_comment_id>/', CHECK THE URL LINK?!?!
+    url: `/like_comment/${postID}`,     //ADD BACK TICKS!!!!! AND PULL THE UNIQUE ID NOW ONLY ONE NEEDED   THE POST ID REPLACES POST COMMENT ID
+    method: 'get',
+    data: $(this).serialize(),
+    success: function(like_total_count){
+        console.log("LIKE COMMENT METHOD SUCCESSFUL - recieved this from server:", like_total_count)
+        $(`#AJAX_COMMENT_LIKES_TOTAL_${postID}`).html(`Like Count: ${like_total_count}`)
+        $(`#COMMENT_LIKE_AJAX`).html('<button class="COMMENT_BUTTONZ">Unlike</button>')  //THIS IS NOW THE BEING TURNED TO UNLIKE
+        change.attr("href",`/unlike_comment/${postID}`)   //KEEP href in ""
+        change.attr("id",`COMMENT_UNLIKE_AJAX_${postID}`)   //CHANGING THE id TAG  ADDED curly brack UNIQUE postID curly brack
+        },
+    })
+});
+// ADD THE DISLIKE
+// ADD FAVORITES
+</script>
+</html>
